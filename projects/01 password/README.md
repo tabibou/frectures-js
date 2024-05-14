@@ -48,3 +48,38 @@
   - entropy?
   - ...
 - Measure and display the password quality every time the text field changes
+
+### Caching
+
+| Password | SHA1                                          |
+| -------- | --------------------------------------------- |
+| monet    | `34580` `654ce86155ed31bb8e3a60fe9312703287d` |
+| brixton  | `34580` `1faa8cbbaa684c3fd3c5705118fa52026e9` |
+| scavenge | `5bced` `358484674c7c51eed8b9b925443a512cdef` |
+| minkster | `5bced` `c318e8d5bce944ccf126d74358bb8caa6cf` |
+
+- Suppose the user enters `monet`, `scavenge`, `brixton`, `minkster` in that order
+  - `monet` should fire a request
+  - `scavenge` should fire a request
+  - `brixton` should not
+  - `minkster` should not
+- 🤓 Can you find more collisions?
+  - [xato-net-10-million-passwords.txt](https://github.com/danielmiessler/SecLists/blob/master/Passwords/xato-net-10-million-passwords.txt)
+  - Use the language you're most familiar/comfortable with
+  - If you absolutely want to use JavaScript instead, [install Node.js](https://nodejs.org/en/download) and take it from here:
+
+```js
+// Save this file as whatever.js
+// and run it from the terminal:
+// node whatever.js
+
+const fs = require("fs");
+
+fs.readFile("xato-net-10-million-passwords.txt", "utf8", function (error, data) {
+    if (error) {
+        console.error(error);
+    } else {
+        console.log(data);
+    }
+});
+```
