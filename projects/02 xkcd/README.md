@@ -49,6 +49,19 @@
 - You can remove the buttons if you want to
 - How does your application behave if the current comic is the very first or last one?
 
+### Ratings
+
+- The user can rate the current comic with:
+  - either 👍 and 👎
+  - or with ★★★☆☆
+- The user can clear a rating, in case they change their mind (or clicked by accident)
+- Persist the ratings beyond page reloads with [localStorage](https://www.w3schools.com/jsref/prop_win_localstorage.asp):
+  - `localStorage.setItem("someUniqueKey", someStringValue)`
+  - `someStringValue = localStorage.getItem("someUniqueKey");`
+- Write a second `.html` file that simply displays all well-rated comics
+  - no buttons required
+  - Both `.html` files share the same `localStorage`
+
 ### Optimization
 
 - Perform the *initial* 3 requests concurrently
