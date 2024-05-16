@@ -1,55 +1,50 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
-<link rel="stylesheet" href="stylesheet.css">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="tacit-css.min.css">
 </head>
 
 <body>
-
 <h1>Breachy Screechy</h1>
+
 <div>
-    <form>
-        <label for="password">Please enter your secure password</label>
-        <input id="password" type="text">
-        <input class="button" type="submit" value="Am I pwned?" onclick="findBreaches()">
-    </form>
+    <label for="password">Please enter your secure password</label>
+    <input id="password" type="text">
+    <button id="button">Am I pwned?</button>
     <p id="result"></p>
 </div>
 
+<script type="module">
+    import { findBreaches } from "./pwcheck.js";
+    document.getElementById("button").onclick = findBreaches;
+    document.getElementById("password").onkeyup = clickPress;
+    
+    function clickPress(event) {
+        if (event.key == "Enter") {
+            findBreaches();
+        }
+    }
+</script>
+
+<div>
+    <h2>Pwnage history</h2>
+        <table id="tableId">
+            <thead>
+                <tr>
+                    <th>
+                        Password
+                    </th>
+                    <th>
+                        No of breaches
+                    </th>
+                </tr>
+            </thead>
+            <tbody id="tbodyId"></tbody>
+        </table>
+    </div>
+
 </body>
 
-<script src="sha1.js"></script>
-
-<script>
-
-
-function findBreaches() {
-    event.preventDefault();
-    const resultCount = document.getElementById("result");
-    const password = document.getElementById("password");
-    const sha = sha1hex(password.value);
-    const prefix = sha.substr(0, 5);
-    const suffix = sha.substring(5);
-
-    fetch("https://api.pwnedpasswords.com/range/" + prefix)
-    .then(response => response.text())
-    .then(text => {
-        let count = 0;
-        const str = text;
-        const lines = text.split(/\r?\n/);
-        for (line of lines) {
-            if (line.includes(suffix)) {
-                count = line.split(":")[1];
-            } 
-        }
-        if (count === 0) {
-            resultCount.innerText = "Lucky you! No breaches found."
-        } else {
-            resultCount.innerText = `Oh no! Found ${count} breaches.`
-        }
-    });
-}
-
-</script>
 </html>

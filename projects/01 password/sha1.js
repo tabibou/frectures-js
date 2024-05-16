@@ -1,4 +1,4 @@
-function sha1hex(str) {
+export function sha1hex(str) {
     const unpadded = new TextEncoder().encode(str);
 
     const bytes = new Uint8Array((unpadded.length + 1 + 8 + 63) & ~63);
