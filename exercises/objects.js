@@ -1,4 +1,4 @@
-function countWords_OLD(str) {
+function countWords_(str) {
     let wordCounts = {}
     for (const word of str.match(/\w+/g)) {
         if (word in wordCounts) wordCounts[word] += 1;
@@ -9,10 +9,9 @@ function countWords_OLD(str) {
 
 function countWords(str) {
     let wordCounts = new Map();
-    let tmp;
     for (const word of str.match(/\w+/g)) {
-        if (wordCounts.has(word)) wordCounts.set(word, wordCounts.get(word) + 1);
-        else wordCounts.set(word, 1);
+        const count = wordCounts.get(word) ?? 0;
+        wordCounts.set(word, count + 1);
     }
     return wordCounts;
 }

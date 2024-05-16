@@ -1,6 +1,7 @@
 
 function releaseYearOfEcmaScript(version) {
     if (typeof version !== "number") throw new Error(`Please submit a number`);
+    if (!Number.isInteger(version)) throw new Error(`Must be a whole number!`);
     if (version < 1) throw new Error(`non-positive ECMAScript version ${version}`);
     //               /////
     switch (version) {
@@ -18,4 +19,4 @@ function releaseYearOfEcmaScript(version) {
 // releaseYearOfEcmaScript([]);
 // releaseYearOfEcmaScript({});
 // releaseYearOfEcmaScript(NaN);
-releaseYearOfEcmaScript("number");
+releaseYearOfEcmaScript(42.5);
