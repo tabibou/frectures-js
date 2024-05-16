@@ -2,20 +2,54 @@
 <html>
 <head>
 <meta charset="UTF-8">
+<link rel="stylesheet" href="stylesheet.css">
 </head>
+
 <body>
 
-
-
-
+<h1>Breachy Screechy</h1>
+<div>
+    <form>
+        <label for="password">Please enter your secure password</label>
+        <input id="password" type="text">
+        <input class="button" type="submit" value="Am I pwned?" onclick="findBreaches()">
+    </form>
+    <p id="result"></p>
+</div>
 
 </body>
+
 <script src="sha1.js"></script>
+
 <script>
 
 
-console.log(sha1hex("The quick brown fox jumps over the lazy dog"));
+function findBreaches() {
+    event.preventDefault();
+    const resultCount = document.getElementById("result");
+    const password = document.getElementById("password");
+    const sha = sha1hex(password.value);
+    const prefix = sha.substr(0, 5);
+    const suffix = sha.substring(5);
 
+    fetch("https://api.pwnedpasswords.com/range/" + prefix)
+    .then(response => response.text())
+    .then(text => {
+        let count = 0;
+        const str = text;
+        const lines = text.split(/\r?\n/);
+        for (line of lines) {
+            if (line.includes(suffix)) {
+                count = line.split(":")[1];
+            } 
+        }
+        if (count === 0) {
+            resultCount.innerText = "Lucky you! No breaches found."
+        } else {
+            resultCount.innerText = `Oh no! Found ${count} breaches.`
+        }
+    });
+}
 
 </script>
 </html>
