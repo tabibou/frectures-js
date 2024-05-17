@@ -11,16 +11,28 @@
 
     <p id="imgTitle"></p>
 
-    <div class="row" style="width: max-content;">
+    <div class="row"">
         <div class="col">
-            <img id="imgLeft" onclick="showPrevImage()" style="cursor:pointer">
-        </div>
-        <div class="col">
-            <img id="imgMiddle">
-        </div>
-        <div class="col">
-            <img id="imgRight" onclick="showNextImage()" style="cursor:pointer">
-        </div>
+        <p id="titleLeft"></p>
+        <img id="imgLeft" onclick="showPrevImage()" style="cursor:pointer">
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="upLeft">&#x1F44D;</span>
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="downLeft">&#x1F44E;</span>
+        <span style="display: inline" class="col" id="ratingLeft"></span>
+    </div>
+    <div class="col">
+        <p id="titleMiddle"></p>
+        <img id="imgMiddle">
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="upMiddle">&#x1F44D;</span>
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="downMiddle">&#x1F44E;</span>
+        <span style="display: inline" class="col" id="ratingMiddle"></span>
+    </div>
+    <div class="col">
+        <p id="titleRight"></p>
+        <img id="imgRight" onclick="showNextImage()" style="cursor:pointer">
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="upRight">&#x1F44D;</span>
+        <span style="display: inline; cursor:pointer" onclick="rate(this.id)" class="col" id="downRight">&#x1F44E;</span>
+        <span style="display: inline" class="col" id="ratingRight"></span>
+    </div>
     </div>
 
     <div>

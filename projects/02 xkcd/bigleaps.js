@@ -1,9 +1,18 @@
-let newestXkcd = 1;
-let currentXkcd;
 const imgLeft = document.getElementById("imgLeft");
 const imgMiddle = document.getElementById("imgMiddle");
 const imgRight = document.getElementById("imgRight");
+const titleLeft = document.getElementById("titleLeft");
+const titleMiddle = document.getElementById("titleMiddle");
+const titleRight = document.getElementById("titleRight");
+const ratingLeft = document.getElementById("ratingLeft");
+const ratingMiddle = document.getElementById("ratingMiddle");
+const ratingRight = document.getElementById("ratingRight");
 const comicData = []
+const GOOD = "good";
+const BAD = "bad";
+
+let newestXkcd = 1;
+let currentXkcd;
 
 function fetchNewestXkcd() {
     fetch("/info.0.json")
@@ -35,17 +44,25 @@ function fetchComicData(imgNum, comicNum) {
             data.img = result.img;
             data.alt = result.alt;
             data.title = result.title;
+            data.rating = null;
             comicData[imgNum] = data;
-            showGallery();
+            updateGallery();
         });
 }
 
-function showGallery() {
+function updateGallery() {
     const gallery = [imgLeft, imgMiddle, imgRight]
+    const titles = [titleLeft, titleMiddle, titleRight]
+    const ratings = [ratingLeft, ratingMiddle, ratingRight]
     for (const [idx, img] of gallery.entries()) {
         if (comicData[idx] !== undefined) {
             img.src = comicData[idx].img;
             img.title = comicData[idx].alt;
+            titles[idx].innerHTML = comicData[idx].title;
+            const rating = localStorage.getItem(toString(comicData[idx].num));
+            if (rating !== null) {
+                ratings[idx].innerHTML = (rating === GOOD) ? "Nice" : "Meh";
+            }
         }
     } 
 }
@@ -83,16 +100,45 @@ function showNextImage() {
     }
 }
 
-function fetchComic(number) {
-    fetch("/" + number + "/info.0.json")
-        .then(response => response.text())
-        .then(text => {
-            const result = JSON.parse(text);
-            img.src = result.img;
-            currentXkcd = result.num;
-            img.title = result.alt;
-            imgTitle.innerHTML = result.title;
-        });
+function rate(id) {
+    let comicNumber;
+    let rating;
+    switch (id) {
+        case "upLeft":
+            comicNumber = comicData[0].num;
+            rating = GOOD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        case "downLeft":
+            comicNumber = comicData[0].num;
+            rating = BAD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        case "upMiddle":
+            comicNumber = comicData[1].num;
+            rating = GOOD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        case "downMiddle":
+            comicNumber = comicData[1].num;
+            rating = BAD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        case "upRight":
+            comicNumber = comicData[2].num;
+            rating = GOOD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        case "downRight":
+            comicNumber = comicData[2].num;
+            rating = BAD;
+            localStorage.setItem(toString(comicNumber), rating);
+            break;
+        }
+    console.log(localStorage.getItem("2932"));
+    console.log(localStorage.getItem("2933"));
+    console.log(localStorage.getItem("2934"));
+    
 }
 
 function showError(type) {
