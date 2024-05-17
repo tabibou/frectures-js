@@ -1,7 +1,10 @@
 let newestXkcd = 1;
 let currentXkcd;
-const img = document.getElementById("xkcdImg");
+const imgLeft = document.getElementById("imgLeft");
+const imgMiddle = document.getElementById("imgMiddle");
+const imgRight = document.getElementById("imgRight");
 const imgTitle = document.getElementById("imgTitle");
+const data = []
 
 function fetchNewestXkcd() {
     fetch("/info.0.json")
@@ -10,10 +13,44 @@ function fetchNewestXkcd() {
             const result = JSON.parse(text);
             newestXkcd = result.num;
             currentXkcd = newestXkcd;
-            img.src = result.img;
-            img.title = result.alt;
-            imgTitle.innerHTML = result.title;
+            fetchThreeComics(currentXkcd);
         });
+}
+
+function fetchThreeComics(middle) {
+    if (middle === undefined) {
+        console.log("undefined middle");
+        middle = parseInt(document.getElementById("xkcdNumber").value);
+        console.log(middle);
+    }
+    for (let i = -1; i < 2; i++) {
+        fetchComicData(i+1, middle + i);
+    }
+}
+
+function fetchComicData(imgNum, comicNum) {
+    console.log(imgNum);
+    console.log(comicNum);
+    fetch("/" + comicNum + "/info.0.json")
+        .then(response => response.text())
+        .then(text => {
+            const result = JSON.parse(text);
+            const comicData = {};
+            comicData.num = result.num;
+            comicData.img = result.img;
+            comicData.alt = result.alt;
+            comicData.title = result.title;
+            data[imgNum] = comicData;
+            showGallery();
+        });
+}
+
+function showGallery() {
+    const gallery = [imgLeft, imgMiddle, imgRight]
+    for (const [idx, img] of gallery.entries()) {
+        img.src = data[idx].img;
+        img.title = data[idx].alt;
+    } 
 }
 
 function fetchCustomXkcd() {
@@ -31,8 +68,8 @@ function showPrevImage() {
         showError("zero");
         return;
     }
-    const prevXkcd = currentXkcd - 1;
-    fetchComic(prevXkcd);
+    currentXkcd -= 1;
+    fetchThreeComics(currentXkcd);
 }
 
 function showNextImage() {
@@ -40,8 +77,8 @@ function showNextImage() {
         showError("end");
         return;
     }
-    const nextXkcd = currentXkcd + 1;
-    fetchComic(nextXkcd);
+    currentXkcd += 1;
+    fetchThreeComics(currentXkcd);
 }
 
 function fetchComic(number) {
