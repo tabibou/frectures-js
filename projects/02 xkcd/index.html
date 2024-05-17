@@ -1,20 +1,48 @@
 <!DOCTYPE html>
 <html>
+
 <head>
-<meta charset="UTF-8">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="stylesheet.css">
 </head>
-<body>
 
+<body onload="fetchNewestXkcd()">
+    <h1>Xtremely Kool Comic Display</h1>
 
+    <p id="imgTitle"></p>
 
+    <div>
+        <img id="xkcdImg">
 
+    </div>
+    <div>
+        <label for="xkcdNumber">Please enter a number</label>
+        <input id="xkcdNumber" type="number">
+        <button id="submitInput" onclick="fetchCustomXkcd()">Search for comic number</button>
+    </div>
+    <div>
+        <p id="error"></p>
+    </div>
+    <div>
+        <button id="prev" onclick="showPrevImage()">Prev</button>
+        <button id="next" onclick="showNextImage()">Next</button>
+        <button id="newest" onclick="fetchNewestXkcd()">Newest</button>
+    </div>
 
 </body>
+
+<!-- <script src="dummy.js"></script> -->
+
+<script src="bigleaps.js"></script>
+
 <script>
-
-
-
-
-
+    document.getElementById("xkcdNumber").onkeyup = onEnter;
+    function onEnter(event) {
+        if (event.key === "Enter") {
+            fetchCustomXkcd();
+        }
+    }
 </script>
+
+
 </html>
