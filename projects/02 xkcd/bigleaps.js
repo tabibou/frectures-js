@@ -3,8 +3,7 @@ let currentXkcd;
 const imgLeft = document.getElementById("imgLeft");
 const imgMiddle = document.getElementById("imgMiddle");
 const imgRight = document.getElementById("imgRight");
-const imgTitle = document.getElementById("imgTitle");
-const data = []
+const comicData = []
 
 function fetchNewestXkcd() {
     fetch("/info.0.json")
@@ -18,29 +17,25 @@ function fetchNewestXkcd() {
 }
 
 function fetchThreeComics(middle) {
-    if (middle === undefined) {
-        console.log("undefined middle");
-        middle = parseInt(document.getElementById("xkcdNumber").value);
-        console.log(middle);
-    }
-    for (let i = -1; i < 2; i++) {
+    currentXkcd = middle;
+    const start = middle === 1 ? 0 : -1;
+    const limit = middle === newestXkcd ? 1 : 2;
+    for (let i = start; i < limit; i++) {
         fetchComicData(i+1, middle + i);
     }
 }
 
 function fetchComicData(imgNum, comicNum) {
-    console.log(imgNum);
-    console.log(comicNum);
     fetch("/" + comicNum + "/info.0.json")
         .then(response => response.text())
         .then(text => {
             const result = JSON.parse(text);
-            const comicData = {};
-            comicData.num = result.num;
-            comicData.img = result.img;
-            comicData.alt = result.alt;
-            comicData.title = result.title;
-            data[imgNum] = comicData;
+            const data = {};
+            data.num = result.num;
+            data.img = result.img;
+            data.alt = result.alt;
+            data.title = result.title;
+            comicData[imgNum] = data;
             showGallery();
         });
 }
@@ -48,37 +43,44 @@ function fetchComicData(imgNum, comicNum) {
 function showGallery() {
     const gallery = [imgLeft, imgMiddle, imgRight]
     for (const [idx, img] of gallery.entries()) {
-        img.src = data[idx].img;
-        img.title = data[idx].alt;
+        if (comicData[idx] !== undefined) {
+            img.src = comicData[idx].img;
+            img.title = comicData[idx].alt;
+        }
     } 
 }
 
 function fetchCustomXkcd() {
-    const input = document.getElementById("xkcdNumber").value;
-    console.log(input);
+    input = parseInt(document.getElementById("xkcdNumber").value);
     if (input < 1 || input > newestXkcd) {
         showError("input");
         return;
     }
-    fetchComic(input);
+    fetchThreeComics(input);
 }
 
 function showPrevImage() {
-    if (currentXkcd === 1) {
+    if (currentXkcd !== 1) {
+        currentXkcd -= 1;
+        comicData[2] = comicData[1];
+        comicData[1] = comicData[0];
+        fetchComicData(0, currentXkcd - 1);
+    } else {
         showError("zero");
         return;
     }
-    currentXkcd -= 1;
-    fetchThreeComics(currentXkcd);
 }
 
 function showNextImage() {
-    if (currentXkcd === newestXkcd) {
+    if (currentXkcd !== newestXkcd) {
+        currentXkcd += 1;
+        comicData[0] = comicData[1];
+        comicData[1] = comicData[2];
+        fetchComicData(2, currentXkcd + 1);
+    } else {
         showError("end");
         return;
     }
-    currentXkcd += 1;
-    fetchThreeComics(currentXkcd);
 }
 
 function fetchComic(number) {
