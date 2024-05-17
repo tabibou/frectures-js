@@ -28,14 +28,15 @@ function fetchNewestXkcd() {
 function fetchThreeComics(middle) {
     currentXkcd = middle;
     const start = middle === 1 ? 0 : -1;
-    const limit = middle === newestXkcd ? 1 : 2;
-    for (let i = start; i < limit; i++) {
-        fetchComicData(i+1, middle + i);
-    }
+    const limit = middle === newestXkcd ? 0 : 1;
+    Promise.all([fetchComicData(0, middle + start),
+        fetchComicData(1, middle),
+        fetchComicData(2, middle + limit)]
+    ).then(updateGallery);
 }
 
 function fetchComicData(imgNum, comicNum) {
-    fetch("/" + comicNum + "/info.0.json")
+    return fetch("/" + comicNum + "/info.0.json")
         .then(response => response.text())
         .then(text => {
             const result = JSON.parse(text);
@@ -46,7 +47,6 @@ function fetchComicData(imgNum, comicNum) {
             data.title = result.title;
             data.rating = null;
             comicData[imgNum] = data;
-            updateGallery();
         });
 }
 
@@ -59,9 +59,11 @@ function updateGallery() {
             img.src = comicData[idx].img;
             img.title = comicData[idx].alt;
             titles[idx].innerHTML = comicData[idx].title;
-            const rating = localStorage.getItem(toString(comicData[idx].num));
+            const rating = localStorage.getItem(comicData[idx].num.toString());
             if (rating !== null) {
                 ratings[idx].innerHTML = (rating === GOOD) ? "Nice" : "Meh";
+            } else {
+                ratings[idx].innerHTML = "";
             }
         }
     } 
@@ -81,7 +83,8 @@ function showPrevImage() {
         currentXkcd -= 1;
         comicData[2] = comicData[1];
         comicData[1] = comicData[0];
-        fetchComicData(0, currentXkcd - 1);
+        fetchComicData(0, currentXkcd - 1)
+        .then(updateGallery);
     } else {
         showError("zero");
         return;
@@ -93,7 +96,8 @@ function showNextImage() {
         currentXkcd += 1;
         comicData[0] = comicData[1];
         comicData[1] = comicData[2];
-        fetchComicData(2, currentXkcd + 1);
+        fetchComicData(2, currentXkcd + 1)
+        .then(updateGallery);
     } else {
         showError("end");
         return;
@@ -107,37 +111,35 @@ function rate(id) {
         case "upLeft":
             comicNumber = comicData[0].num;
             rating = GOOD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         case "downLeft":
             comicNumber = comicData[0].num;
             rating = BAD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         case "upMiddle":
             comicNumber = comicData[1].num;
             rating = GOOD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         case "downMiddle":
             comicNumber = comicData[1].num;
             rating = BAD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         case "upRight":
             comicNumber = comicData[2].num;
             rating = GOOD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         case "downRight":
             comicNumber = comicData[2].num;
             rating = BAD;
-            localStorage.setItem(toString(comicNumber), rating);
+            localStorage.setItem(comicNumber.toString(), rating);
             break;
         }
-    console.log(localStorage.getItem("2932"));
-    console.log(localStorage.getItem("2933"));
-    console.log(localStorage.getItem("2934"));
+    updateGallery();
     
 }
 
