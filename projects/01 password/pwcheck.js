@@ -5,6 +5,7 @@ export function findBreaches() {
     const resultCount = document.getElementById("result");
     const password = document.getElementById("password");
     const sha = sha1hex(password.value);
+    console.log("Hash: " + sha);
     const prefix = sha.substring(0, 5);
     const suffix = sha.substring(5);
 
